@@ -3,43 +3,10 @@ class Pentomino {
     board;
     exact_cover_matrix;
 
-    constructor() {
-        this.board = new Board();
+    constructor(type) {
+        this.board = new Board(type);
         this.exact_cover_matrix = this.construct_exact_cover_matrix();
     }
-
-    construct_exact_cover_matrix = () => {
-        let matrix = [];
-        matrix.push(this.get_head_row());
-        this.board.possible_tile_placements.forEach((tile, tile_index) => {
-            tile.forEach(placement => {
-                let columns = placement.map(position => this.board.get_number_from_position(position));
-                matrix.push([]);
-                for (let column = 0; column < 72; column++){
-                    matrix[matrix.length -1].push(0);
-                }
-                matrix[matrix.length-1][tile_index] = 1;
-                columns.forEach(column => matrix[matrix.length-1][column+11] = 1)
-            });
-        });
-        return matrix;
-    };
-
-    get_head_row = () => {
-        let head = [];
-        let tiles = Pentomino.get_tiles();
-        tiles.forEach(tile => {
-            head.push(tile.properties);
-        });
-        for (let row = 1; row <= this.board.rows(); row++) {
-            for (let column = 1; column <= this.board.columns(); column++) {
-                if (this.board.board[row-1][column-1] !== 0) {
-                    head.push({row: row, column: column})
-                }
-            }
-        }
-        return head;
-    };
 
     static get_tiles = () => {
         const tile_one = new Tile([
@@ -128,6 +95,39 @@ class Pentomino {
         ], {color: "#660066"});
         return [tile_one, tile_two, tile_three, tile_four, tile_five, tile_six, tile_seven, tile_eight, tile_nine, tile_ten, tile_eleven, tile_twelve];
     }
+
+    construct_exact_cover_matrix = () => {
+        let matrix = [];
+        matrix.push(this.get_head_row());
+        this.board.possible_tile_placements.forEach((tile, tile_index) => {
+            tile.forEach(placement => {
+                let columns = placement.map(position => this.board.get_number_from_position(position));
+                matrix.push([]);
+                for (let column = 0; column < 72; column++) {
+                    matrix[matrix.length - 1].push(0);
+                }
+                matrix[matrix.length - 1][tile_index] = 1;
+                columns.forEach(column => matrix[matrix.length - 1][column + 11] = 1)
+            });
+        });
+        return matrix;
+    };
+
+    get_head_row = () => {
+        let head = [];
+        let tiles = Pentomino.get_tiles();
+        tiles.forEach(tile => {
+            head.push(tile.properties);
+        });
+        for (let row = 1; row <= this.board.rows(); row++) {
+            for (let column = 1; column <= this.board.columns(); column++) {
+                if (this.board.board[row - 1][column - 1] !== 0) {
+                    head.push({row: row, column: column})
+                }
+            }
+        }
+        return head;
+    };
 }
 
 class Tile {
@@ -240,27 +240,49 @@ class Tile {
 
 }
 
-class Board {
+export class Board {
+    static CHESS = 1;
+    static SIX_BY_TEN = 2;
+    static FIVE_BY_TWELVE = 3;
     board = [];
     possible_tile_placements = [];
     zero_count_before_position_map;
 
-    constructor() {
-        for (let row = 0; row < 8; row++) {
-            this.board.push([]);
-            for (let column = 1; column <= 8; column++) {
-                if (row >= 3 && row <= 4 && column >= 4 && column <= 5){
-                    this.board[row].push(0);
-                } else {
-                    this.board[row].push((row * 11) + column);
-                }
-            }
+    constructor(type) {
+        if (type === Board.CHESS) {
+            this.create_chess_board();
+        } else if (type === Board.SIX_BY_TEN) {
+            this.create_rectangle(6, 10);
+        } else if (type === Board.FIVE_BY_TWELVE) {
+            this.create_rectangle(5, 12);
         }
         this.zero_count_before_position_map = new Map();
         this.get_zero_count_before_position();
         let tiles = Pentomino.get_tiles();
         tiles.forEach(tile => this.possible_tile_placements.push(this.get_placements_for_all_tile_positions(tile)));
     }
+
+    create_chess_board = () => {
+        for (let row = 0; row < 8; row++) {
+            this.board.push([]);
+            for (let column = 1; column <= 8; column++) {
+                if (row >= 3 && row <= 4 && column >= 4 && column <= 5) {
+                    this.board[row].push(0);
+                } else {
+                    this.board[row].push((row * 11) + column);
+                }
+            }
+        }
+    };
+
+    create_rectangle = (rows, columns) => {
+        for (let row = 0; row < rows; row++) {
+            this.board.push([]);
+            for (let column = 1; column <= columns; column++) {
+                this.board[row].push((row * 11) + column);
+            }
+        }
+    };
 
     get_placements_for_all_tile_positions = (tile) => {
         let placements = [];
@@ -297,8 +319,8 @@ class Board {
     get_zero_count_before_position = () => {
         let count = 0;
         let zeros = 0;
-        for (let row = 0; row < this.rows(); row++){
-            for (let column = 0; column < this.columns(); column++){
+        for (let row = 0; row < this.rows(); row++) {
+            for (let column = 0; column < this.columns(); column++) {
                 count++;
                 if (this.board[row][column] === 0) {
                     zeros++;
@@ -318,5 +340,4 @@ class Board {
 
 
 }
-
-export default Pentomino
+export default Pentomino;

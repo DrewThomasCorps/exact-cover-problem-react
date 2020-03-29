@@ -3,7 +3,6 @@ class Matrix {
     rows;
 
     constructor(input) {
-        console.log(input);
         this.columns = new LinkedList();
         let head = input.shift();
         this.rows = 0;

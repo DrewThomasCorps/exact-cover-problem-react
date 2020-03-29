@@ -41,10 +41,10 @@ let PentominoRenderer = ({board, solutions_row}) => {
         return node;
     };
 
-    return tiles && tiles.map(row => {
-        return <div style={{height: "30px"}}>
-            {row.map(column => {
-                return <div style={{background: column.color, height: "30px", width: "30px", display:"inline-block", margin: "0"}}/>
+    return tiles && tiles.map((row, index) => {
+        return <div key={index} style={{height: "30px"}}>
+            {row.map((column, index) => {
+                return <div key={index} style={{background: column.color, height: "30px", width: "30px", display:"inline-block", margin: "0"}}/>
             })}
         </div>
     })
