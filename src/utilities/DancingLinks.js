@@ -6,13 +6,22 @@ class DancingLinks {
     constructor(matrix) {
         this.matrix = matrix;
         this.get_exact_cover_solutions();
+        this.get_next_solution();
     }
+
+    get_next_solution = () => {
+        let count = this.final_solutions.length;
+        this.backtrack();
+        if (this.final_solutions.length > count) {
+            this.get_next_solution();
+        }
+    };
 
     get_exact_cover_solutions = () => {
         if (this.matrix.columns.head.right === this.matrix.columns.head) {
             this.final_solutions.push([...this.current_solution]);
             console.log(this.current_solution);
-            return this.backtrack();
+            return
         }
         let chosen_column = this.matrix.get_column_with_fewest_nodes();
         if (chosen_column.total_nodes === 0) {
