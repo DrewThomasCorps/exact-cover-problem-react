@@ -10,6 +10,7 @@ class Pentomino {
 
     construct_exact_cover_matrix = () => {
         let matrix = [];
+        matrix.push(this.get_head_row());
         this.board.possible_tile_placements.forEach((tile, tile_index) => {
             tile.forEach(placement => {
                 let columns = placement.map(position => this.board.get_number_from_position(position));
@@ -24,6 +25,22 @@ class Pentomino {
         return matrix;
     };
 
+    get_head_row = () => {
+        let head = [];
+        let tiles = Pentomino.get_tiles();
+        tiles.forEach(tile => {
+            head.push(tile.properties);
+        });
+        for (let row = 1; row <= this.board.rows(); row++) {
+            for (let column = 1; column <= this.board.columns(); column++) {
+                if (this.board.board[row-1][column-1] !== 0) {
+                    head.push({row: row, column: column})
+                }
+            }
+        }
+        return head;
+    };
+
     static get_tiles = () => {
         const tile_one = new Tile([
             {row: 1, column: 1},
@@ -31,95 +48,97 @@ class Pentomino {
             {row: 1, column: 3},
             {row: 1, column: 4},
             {row: 1, column: 5}
-        ]);
+        ], {color: "#aa0000"});
         const tile_two = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 2, column: 2},
             {row: 2, column: 3},
             {row: 3, column: 2}
-        ]);
+        ], {color: "#00aa00"});
         const tile_three = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 1, column: 3},
             {row: 1, column: 4},
             {row: 2, column: 4}
-        ]);
+        ], {color: "#0000aa"});
         const tile_four = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 1, column: 3},
             {row: 2, column: 1},
             {row: 2, column: 2}
-        ]);
+        ], {color: "#aaaa00"});
         const tile_five = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 1, column: 3},
             {row: 2, column: 3},
             {row: 2, column: 4}
-        ]);
+        ], {color: "#aa00aa"});
         const tile_six = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 1, column: 3},
             {row: 2, column: 2},
             {row: 3, column: 2}
-        ]);
+        ], {color: "#00aaaa"});
         const tile_seven = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 1, column: 3},
             {row: 2, column: 1},
             {row: 2, column: 3}
-        ]);
+        ], {color: "#660000"});
         const tile_eight = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 1, column: 3},
             {row: 2, column: 1},
             {row: 3, column: 1}
-        ]);
+        ], {color: "#006600"});
         const tile_nine = new Tile([
             {row: 1, column: 1},
             {row: 2, column: 1},
             {row: 2, column: 2},
             {row: 3, column: 2},
             {row: 3, column: 3}
-        ]);
+        ], {color: "#000066"});
         const tile_ten = new Tile([
             {row: 1, column: 2},
             {row: 2, column: 1},
             {row: 2, column: 2},
             {row: 2, column: 3},
             {row: 3, column: 2}
-        ]);
+        ], {color: "#666600"});
         const tile_eleven = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 1, column: 3},
             {row: 1, column: 4},
             {row: 2, column: 2}
-        ]);
+        ], {color: "#006666"});
         const tile_twelve = new Tile([
             {row: 1, column: 1},
             {row: 1, column: 2},
             {row: 2, column: 2},
             {row: 3, column: 2},
             {row: 3, column: 3}
-        ]);
+        ], {color: "#660066"});
         return [tile_one, tile_two, tile_three, tile_four, tile_five, tile_six, tile_seven, tile_eight, tile_nine, tile_ten, tile_eleven, tile_twelve];
     }
 }
 
 class Tile {
 
+    properties;
     initial_placement;
     current_placement;
     possible_placements = [];
 
-    constructor(initial_placement) {
+    constructor(initial_placement, properties) {
+        this.properties = properties;
         this.initial_placement = initial_placement;
         this.current_placement = [];
         this.get_possible_positions();
@@ -227,14 +246,14 @@ class Board {
     zero_count_before_position_map;
 
     constructor() {
-        for (let row = 0; row < 6; row++) {
+        for (let row = 0; row < 8; row++) {
             this.board.push([]);
-            for (let column = 1; column <= 10; column++) {
-                // if (row >= 3 && row <= 4 && column >= 4 && column <= 5){
-                //     this.board[row].push(0);
-                // } else {
+            for (let column = 1; column <= 8; column++) {
+                if (row >= 3 && row <= 4 && column >= 4 && column <= 5){
+                    this.board[row].push(0);
+                } else {
                     this.board[row].push((row * 11) + column);
-                // }
+                }
             }
         }
         this.zero_count_before_position_map = new Map();

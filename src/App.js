@@ -3,45 +3,31 @@ import Matrix from "./utilities/Matrix";
 import DancingLinks from "./utilities/DancingLinks";
 import './App.css';
 import Pentomino from "./utilities/Pentomino";
+import PentominoRenderer from "./components/PentominoRenderer";
 
 function App() {
 
-    let [final_solutions, set_final_solutions] = useState(null);
+    let [pentomino, set_pentomino] = useState(null);
+    let [row_rendered, set_row_rendered] = useState(null);
+
+    useEffect(() => {
+        set_pentomino(new Pentomino());
+    }, []);
 
 
     useEffect(() => {
-        const input = [
-            [1, 0, 0, 1, 0, 0, 1],
-            [1, 0, 0, 1, 0, 0, 0],
-            [0, 0, 0, 1, 1, 0, 1],
-            [0, 0, 1, 0, 0, 1, 0],
-            [0, 0, 1, 0, 1, 1, 0],
-            [0, 1, 1, 0, 0, 1, 1],
-            [0, 1, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 1, 1, 1],
-            [0, 1, 0, 0, 0, 0, 1]
-        ];
-        let pentomino = new Pentomino();
+        if (pentomino === null) {
+            return;
+        }
         let matrix = new Matrix(pentomino.exact_cover_matrix);
-        console.log(pentomino.exact_cover_matrix);
-        let solver = new DancingLinks(matrix);
-        console.log(solver.final_solutions);
-        set_final_solutions(solver.final_solutions);
-    }, []);
+        let links =new DancingLinks(matrix, set_row_rendered);
+        set_row_rendered(links.final_solutions[2]);
+    }, [pentomino]);
 
     return (
-        final_solutions &&
+        row_rendered &&
         <div className="App">
-            {final_solutions.map((solution, index) => {
-                return <React.Fragment key={index}>
-                    {solution.map((node, index) => {
-                        return <span key={index} style={{border: "1px solid black", padding: "7px"}}>{node.value}</span>
-                    })}
-                    <hr/>
-                </React.Fragment>
-            })}
+            <PentominoRenderer board={pentomino.board} solutions_row={row_rendered}/>
         </div>
     );
 }

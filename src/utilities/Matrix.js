@@ -3,18 +3,21 @@ class Matrix {
     rows;
 
     constructor(input) {
+        console.log(input);
         this.columns = new LinkedList();
+        let head = input.shift();
         this.rows = 0;
-        for (let i = 1; i <= input[0].length; i++) {
-            this.add_column();
-        }
+        head.forEach(value => {
+            this.add_column(value)
+        });
         input.forEach((row) => {
             this.add_row(row)
         });
     }
 
-    add_column = () => {
+    add_column = (value) => {
         let column = new LinkedList();
+        column.head.value = value;
         LinkedList.add_node_to_right(this.columns.head, column.head);
     };
 

@@ -1,10 +1,12 @@
 class DancingLinks {
     matrix;
+    set_row_rendered;
     final_solutions = [];
     current_solution = [];
 
-    constructor(matrix) {
+    constructor(matrix, set_row_rendered) {
         this.matrix = matrix;
+        this.set_row_rendered = set_row_rendered;
         this.get_exact_cover_solutions();
         this.get_next_solution();
     }
