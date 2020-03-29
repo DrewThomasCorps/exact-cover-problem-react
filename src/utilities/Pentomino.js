@@ -227,19 +227,18 @@ class Board {
     zero_count_before_position_map;
 
     constructor() {
-        for (let row = 0; row < 8; row++) {
+        for (let row = 0; row < 6; row++) {
             this.board.push([]);
-            for (let column = 1; column <= 8; column++) {
-                if (row >= 3 && row <= 4 && column >= 4 && column <= 5){
-                    this.board[row].push(0);
-                } else {
-                    this.board[row].push((row * 10) + column);
-                }
+            for (let column = 1; column <= 10; column++) {
+                // if (row >= 3 && row <= 4 && column >= 4 && column <= 5){
+                //     this.board[row].push(0);
+                // } else {
+                    this.board[row].push((row * 11) + column);
+                // }
             }
         }
         this.zero_count_before_position_map = new Map();
         this.get_zero_count_before_position();
-        console.log(this.zero_count_before_position_map);
         let tiles = Pentomino.get_tiles();
         tiles.forEach(tile => this.possible_tile_placements.push(this.get_placements_for_all_tile_positions(tile)));
     }
