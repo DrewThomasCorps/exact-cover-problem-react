@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Matrix from "./utilities/Matrix";
 import DancingLinks from "./utilities/DancingLinks";
 import './App.css';
-import Pentomino from "./utilities/Pentomino";
-import {Board} from "./utilities/Pentomino";
+import Pentomino, {Board} from "./utilities/Pentomino";
 import PentominoRenderer from "./components/PentominoRenderer";
 
 function App() {
@@ -53,21 +52,26 @@ function App() {
         row_rendered &&
         <div className="App">
             <PentominoRenderer board={pentomino.board} solutions_row={row_rendered}/>
-            <input value={interval_time.current} onChange={(e) => {
-                let value = parseInt(e.target.value);
-                if (isNaN(value)){
-                    value = 0;
-                }
-                set_interval_time({current: value, previous: value})
-            }}/>
-            <button onClick={() => change_board(Board.CHESS)}>Chess</button>
-            <button onClick={() => change_board(Board.SIX_BY_TEN)}>6 x 10</button>
-            <button onClick={() => change_board(Board.FIVE_BY_TWELVE)}>5 x 12</button>
+            <div className={"controls"}>
+                <div>
+                    <label>Animation Speed</label>
+                    <input id={"speed-control"} value={interval_time.current} onChange={(e) => {
+                        let value = parseInt(e.target.value);
+                        if (isNaN(value)) {
+                            value = 0;
+                        }
+                        set_interval_time({current: value, previous: value})
+                    }}/>
+                </div>
+                <div>
+                    <button onClick={() => change_board(Board.CHESS)}>Chess</button>
+                    <button onClick={() => change_board(Board.SIX_BY_TEN)}>6 x 10</button>
+                    <button onClick={() => change_board(Board.FIVE_BY_TWELVE)}>5 x 12</button>
+                </div>
+            </div>
         </div>
     );
 }
-
-
 
 
 export default App;
